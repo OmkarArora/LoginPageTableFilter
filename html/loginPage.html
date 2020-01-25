@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>
+        Login
+    </title>
+    <link rel="stylesheet" href="../css/styleLoginPage.css" />
+</head>
+
+<body>
+    <div class="loginContainer">
+        <div class="pattern"></div>
+        <div class="loginDetails">
+            <div class="companyString">
+                <p>GLP Learning Model</p>
+            </div>
+            <div class="signInString">
+                <p>Sign In</p>
+            </div>
+            <form>
+                <div class="usernameContainer">
+                    <!-- <img src="../images/user.svg" /> -->
+                    <input type="text" placeholder="Username" id="usernameField">
+                </div>
+                <br>
+                <div class="passwordContainer">
+                    <input type="password" placeholder="Password" id="passwordField">
+                </div>
+                <br>
+                <!-- <input type="checkbox" onclick="togglePasswordVisibility()">Show Password -->
+                <br>
+            </form>
+            <!--window.location not working when button is inside form element-->
+            <input type="submit" value="Sign In" onclick="validateCredentials()">
+
+        </div>
+    </div>
+    <script src="../script/loginpage_script.js"></script>
+</body>
+
+</html>
