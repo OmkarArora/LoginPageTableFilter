@@ -1,12 +1,48 @@
 let tableDivElement = document.querySelector(".info-div");
+let cityArray = [];
+let stateArray = [];
+let countryArray = [];
+const cityFilter = document.getElementById("cityFilter");
+const stateFilter = document.getElementById("stateFilter");
+const countryFilter = document.getElementById("countryFilter");
 
-fetch("../data/MOCK_DATA.json")
-  .then(function(response) {
-    return response.json();
-  })
-  .then(data => createTable(data));
+const setUpPage = () => {
+  fetch("../data/MOCK_DATA.json")
+    .then(function(response) {
+      return response.json();
+    })
+    .then(data => {
+      createTable(data);
+      createDropDown(data);
+    });
+};
+
+const createDropDown = data => {
+  //get unique data
+  data.forEach(element => {
+    if (cityArray.indexOf(element.city) == -1) cityArray.push(element.city);
+    if (stateArray.indexOf(element.state) == -1) stateArray.push(element.state);
+    if (countryArray.indexOf(element.country) == -1)
+      countryArray.push(element.country);
+  });
+  cityArray.sort();
+  stateArray.sort();
+  countryArray.sort();
+  let cityOptions = cityArray.map(city => `<option>${city}</option>`);
+  cityOptions = `<option>All</option>` + cityOptions.join("");
+  cityFilter.innerHTML = cityOptions;
+  let stateOptions = stateArray.map(state => `<option>${state}</option>`);
+  stateOptions = `<option>All</option>` + stateOptions.join("");
+  stateFilter.innerHTML = stateOptions;
+  let countryOptions = countryArray.map(
+    country => `<option>${country}</option>`
+  );
+  countryOptions = `<option>All</option>` + countryOptions.join("");
+  countryFilter.innerHTML = countryOptions;
+};
 
 const createTable = data => {
+  //11console.log(data);
   const tableEntries = data.map(
     obj =>
       `<tr><td>${obj.id}</td><td>${obj.city}</td><td>${obj.phone}</td><td>${obj.state}</td><td>${obj.country}</td></tr>`
@@ -26,8 +62,10 @@ const createTable = data => {
 };
 
 const searchTable = () => {
-  let filterType = document.getElementsByTagName("select")[0].value;
-  let filter = document.getElementById("searchInput").value.toUpperCase();
+  const cityFilterValue = cityFilter.value.toUpperCase();
+  const stateFilterValue = stateFilter.value.toUpperCase();
+  const countryFilterValue = countryFilter.value.toUpperCase();
+  let filter = document.getElementById("searchButton").value.toUpperCase();
   let tableElement = document.querySelector(".info-table");
   let tableRow = tableElement.getElementsByTagName("tr");
 
@@ -37,96 +75,36 @@ const searchTable = () => {
   }
 
   for (let i = 1; i < tableRow.length; i++) {
-    //i=0 contains th, dont need that
+    let city = tableRow[i]
+      .getElementsByTagName("td")[1]
+      .textContent.toUpperCase();
+    let state = tableRow[i]
+      .getElementsByTagName("td")[3]
+      .textContent.toUpperCase();
+    let country = tableRow[i]
+      .getElementsByTagName("td")[4]
+      .textContent.toUpperCase();
 
-    //check City
-    //let tableData = tableRow[i].getElementsByTagName("td")[1];
-    //0-ID, 1-City, 2-Phone, 3-State, 4-Country
-    //check first occurence of filter in columnValue
-    if (filterType === "All") {
-      if (
-        tableRow[i]
-          .getElementsByTagName("td")[0]
-          .textContent.toUpperCase()
-          .indexOf(filter) > -1 ||
-        tableRow[i]
-          .getElementsByTagName("td")[1]
-          .textContent.toUpperCase()
-          .indexOf(filter) > -1 ||
-        tableRow[i]
-          .getElementsByTagName("td")[2]
-          .textContent.toUpperCase()
-          .indexOf(filter) > -1 ||
-        tableRow[i]
-          .getElementsByTagName("td")[3]
-          .textContent.toUpperCase()
-          .indexOf(filter) > -1 ||
-        tableRow[i]
-          .getElementsByTagName("td")[4]
-          .textContent.toUpperCase()
-          .indexOf(filter) > -1
-      ) {
-        tableRow[i].style.display = "";
-      } else {
+    let cityFlag = false;
+    let stateFlag = false;
+    if (cityFilterValue !== "ALL") {
+      if (city.indexOf(cityFilterValue) > -1) tableRow[i].style.display = "";
+      else {
         tableRow[i].style.display = "none";
+        cityFlag = true;
       }
-    } else if (filterType === "ID") {
-      if (
-        tableRow[i]
-          .getElementsByTagName("td")[0]
-          .textContent.toUpperCase()
-          .indexOf(filter) > -1
-      ) {
-        tableRow[i].style.display = "";
-      } else {
+    }
+    if (stateFilterValue !== "ALL" && !cityFlag) {
+      if (state.indexOf(stateFilterValue) > -1) tableRow[i].style.display = "";
+      else {
         tableRow[i].style.display = "none";
+        stateFlag = true;
       }
-    } else if (filterType === "City") {
-      if (
-        tableRow[i]
-          .getElementsByTagName("td")[1]
-          .textContent.toUpperCase()
-          .indexOf(filter) > -1
-      ) {
+    }
+    if (countryFilterValue !== "ALL" && !cityFlag && !stateFlag) {
+      if (country.indexOf(countryFilterValue) > -1)
         tableRow[i].style.display = "";
-      } else {
-        tableRow[i].style.display = "none";
-      }
-    } else if (filterType === "Phone") {
-      if (
-        tableRow[i]
-          .getElementsByTagName("td")[2]
-          .textContent.toUpperCase()
-          .indexOf(filter) > -1
-      ) {
-        tableRow[i].style.display = "";
-      } else {
-        tableRow[i].style.display = "none";
-      }
-    } else if (filterType === "State") {
-      if (
-        tableRow[i]
-          .getElementsByTagName("td")[3]
-          .textContent.toUpperCase()
-          .indexOf(filter) > -1
-      ) {
-        tableRow[i].style.display = "";
-      } else {
-        tableRow[i].style.display = "none";
-      }
-    } else if (filterType === "Country") {
-      if (
-        tableRow[i]
-          .getElementsByTagName("td")[4]
-          .textContent.toUpperCase()
-          .indexOf(filter) > -1
-      ) {
-        tableRow[i].style.display = "";
-      } else {
-        tableRow[i].style.display = "none";
-      }
-    } else {
-      //no other possibility
+      else tableRow[i].style.display = "none";
     }
   }
 };

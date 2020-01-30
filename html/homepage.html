@@ -7,10 +7,10 @@
 
 </head>
 
-<body>
+<body onload="setUpPage()">
     <div class="container">
         <div class="dropdown-filter">
-            Filter
+            <!-- Filter
             <select>
                 <option>All</option>
                 <option>ID</option>
@@ -18,9 +18,23 @@
                 <option>Phone</option>
                 <option>State</option>
                 <option>Country</option>
+            </select> -->
+            City
+            <select id="cityFilter">
             </select>
+
+            State
+            <select id="stateFilter">
+            </select>
+
+            Country
+            <select id="countryFilter">
+            </select>
+
+            <button onclick="searchTable()" id="searchButton">SEARCH</button>
         </div>
-        <input type="text" id="searchInput" placeholder="Search" onkeyup="searchTable()">
+        <!-- <input type="text" id="searchInput" placeholder="Search" onkeyup="searchTable()"> -->
+
 
         <div class="info-div">
 
